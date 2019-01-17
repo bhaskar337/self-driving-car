@@ -33,14 +33,13 @@ class Planner:
 		ready_for_lane_change = False
 		is_left_lane_free = True
 		is_right_lane_free = True
-
 		for i in sensor_fusion:
 			vehicle = Vehicle(i)
 			if vehicle.is_in_lane(lane):
-				vehicle.s = prev_size * 0.02 * vehicle.speed
+				vehicle.s += prev_size * 0.02 * vehicle.speed
 				is_in_front_of_us = vehicle.s > car_s
 				is_closer_than_safety_margin = vehicle.s - car_s < safety_margin
-
+		
 				if is_in_front_of_us and is_closer_than_safety_margin:
 					is_too_close = True
 					prepare_for_lane_change = True
@@ -65,7 +64,7 @@ class Planner:
 						is_right_lane_free = True
 
 				if is_left_lane_free or is_right_lane_free:
-					ready_for_lane_change = False
+					ready_for_lane_change = True
 					# break
 
 		if ready_for_lane_change and is_left_lane_free and lane > 0:
@@ -83,8 +82,8 @@ class Planner:
 		ref_yaw = math.radians(car_yaw)
 
 		if prev_size < 2:
-			prev_car_x = car_x - math.cos(car_yaw)
-			prev_car_y = car_y - math.sin(car_yaw)
+			prev_car_x = car_x - math.cos(ref_yaw)
+			prev_car_y = car_y - math.sin(ref_yaw)
 
 			pts_x += [prev_car_x, car_x]
 			pts_y += [prev_car_y, car_y]
@@ -109,8 +108,8 @@ class Planner:
 		for i in range(len(pts_x)):
 			shift_x = pts_x[i] - ref_x
 			shift_y = pts_y[i] - ref_y
-			pts_x[i] = shift_x * math.cos(0-ref_yaw) - shift_y * math.sin(0-ref_yaw)
-			pts_y[i] = shift_y * math.sin(0-ref_yaw) + shift_y * math.cos(0-ref_yaw)
+			pts_x[i] = shift_x * math.cos(-ref_yaw) - shift_y * math.sin(-ref_yaw)
+			pts_y[i] = shift_x * math.sin(-ref_yaw) + shift_y * math.cos(-ref_yaw)
 
 		tck = interpolate.splrep(pts_x, pts_y)
 		next_x_vals = previous_path_x[:]
@@ -137,10 +136,6 @@ class Planner:
 
 			next_x_vals.append(x_point)
 			next_y_vals.append(y_point)
-
-		print(next_x_vals)
-		print(next_y_vals)
-		print()
 
 		msg = {
 			'next_x': next_x_vals,

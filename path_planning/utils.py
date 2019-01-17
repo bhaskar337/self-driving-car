@@ -2,8 +2,8 @@ import csv
 import math 
 
 lane_width = 4
-safety_margin = 20
-max_safe_speed = 49.5 
+safety_margin = 30
+max_safe_speed = 80
 
 
 class Vehicle:
@@ -27,7 +27,6 @@ with open('highway_waypoints.csv') as csv_file:
 		map_s.append(float(row[2]))
 
 
-print(map_x)
 def frenet_to_cartesian(s, d):
 	prev_wp = -1 
 
@@ -37,7 +36,6 @@ def frenet_to_cartesian(s, d):
 	wp2 = (prev_wp + 1) % len(map_x)
 
 	heading = math.atan2(map_y[wp2] - map_y[prev_wp], map_x[wp2] - map_x[prev_wp])
-	
 	seg_s = s - map_s[prev_wp]
 	seg_x = map_x[prev_wp] + seg_s * math.cos(heading)
 	seg_y = map_y[prev_wp] + seg_s * math.sin(heading)
