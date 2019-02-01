@@ -2,8 +2,8 @@ import csv
 import math 
 
 lane_width = 4
-safety_margin = 30
-max_safe_speed = 80
+safety_margin = 20
+max_safe_speed = 49.5
 
 
 class Vehicle:
