@@ -44,6 +44,7 @@ def telemetry(sid, data):
 			data={
 				'steer_angle': str(msg[0]),
 				'torque': str(msg[1]),
+				'd': str(msg[2]),
 			},
 			skip_sid=True
 		)
